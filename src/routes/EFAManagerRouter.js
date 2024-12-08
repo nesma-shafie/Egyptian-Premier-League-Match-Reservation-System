@@ -14,22 +14,35 @@ router.post("/matches", managerAuth, async (req, res) => {
     linesmen1,
     linesmen2,
   } = req.body;
+  if (!homeTeamName || !awayTeamName || !matchVenueName || !dateTime || !mainReferee || !linesmen1 || !linesmen2) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
   try {
+    const homeTeam = await prisma.team.findUnique({ where: { name: homeTeamName } });
+    const awayTeam = await prisma.team.findUnique({ where: { name: awayTeamName } });
+    const matchVenue = await prisma.stadium.findUnique({
+      where: { name: matchVenueName },
+      include: { seats: true }, // Include seats to get the count
+    });
+  
+  
+    // Check if any of the teams or venue doesn't exist
+    if (!homeTeam || !awayTeam || !matchVenue) {
+      return res.status(400).json({ error: "One or more teams or venues not found" });
+    }
+  
+    const vacantSeats = matchVenue.seats.length;
+    // Create the match if all references are valid
     const match = await prisma.match.create({
       data: {
-        homeTeam: {
-          connect: { name: homeTeamName }, // Connect to an existing home team by name
-        },
-        awayTeam: {
-          connect: { name: awayTeamName }, // Connect to an existing away team by name
-        },
-        matchVenue: {
-          connect: { name: matchVenueName }, // Connect to an existing stadium by name
-        },
-        dateTime: dateTime ? new Date(dateTime) : undefined,
+        homeTeamId: homeTeam.id, // Use the id from the found home team
+        awayTeamId: awayTeam.id, // Use the id from the found away team
+        matchVenueId: matchVenue.id, // Use the id from the found match venue
+        dateTime: new Date(dateTime),
         mainReferee,
         linesmen1,
         linesmen2,
+        vacantSeats
       },
       include: {
         homeTeam: true,
@@ -37,6 +50,8 @@ router.post("/matches", managerAuth, async (req, res) => {
         matchVenue: true,
       },
     });
+  
+  
 
     res
       .status(201)
@@ -76,13 +91,37 @@ router.put("/matches/:id", managerAuth, async (req, res) => {
     return res.status(400).json({ message: "Invalid fields in request body" });
   }
 
-  const data = req.body;
+  
   try {
+    const data = req.body;
+    const updateData = {};
+  if (data.homeTeamName) {
+    updateData.homeTeam = { connect: { name: data.homeTeamName } };
+  }
+  if (data.awayTeamName) {
+    updateData.awayTeam = { connect: { name: data.awayTeamName } };
+  }
+  if (data.matchVenueName) {
+    updateData.matchVenue = { connect: { name: data.matchVenueName } };
+  }
+  if (data.mainReferee) {
+    updateData.mainReferee = data.mainReferee;
+  }
+  if (data.dateTime) {
+    updateData.dateTime = new Date(data.dateTime);
+  }
+  if (data.linesmen1) {
+    updateData.linesmen1 = data.linesmen1;
+  }
+  if (data.linesmen2) {
+    updateData.linesmen2 = data.linesmen2;
+  }
+  
     const updatedMatch = await prisma.match.update({
       where: {
         id: parseInt(id), // Ensure `id` is parsed to an integer
       },
-      data,
+      data:updateData,
       include: {
         homeTeam: true,
         awayTeam: true,
@@ -161,42 +200,46 @@ router.get("/matches/:id/seats", managerAuth, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const match = await prisma.match.findUnique({
-      where: { id: matchId },
+    const match = await prisma.match.findFirst({
+      where: { id: parseInt(id) },
       select: {
         matchVenue: {
           select: {
             seats: {
-              include: {
-                ticket: true,
+              select: {
+                seatNo: true,
+                ticket: true, // Include the ticket relation to check if it's reserved or not
               },
             },
           },
         },
       },
     });
+    
     if (!match) {
       return res.status(404).json({ error: "Match not found" });
     }
-
-    const vacantseats = match.matchVenue.seats.filter(
-      (seat) => seat.ticket == null
-    );
-    const reservedseats = match.matchVenue.seats.filter(
-      (seat) => seat.ticket != null
-    );
-
-    const reservedSeatNumbers = reservedseats.map((seat) => seat.seatNo);
-    const reserved = reservedseats.length;
-    const vacantSeatNumbers = vacantseats.map((seat) => seat.seatNo);
-    const vacant = vacantseats.length;
-
+    
+   
+    // Separate the seats into vacant and reserved
+    const vacantSeats = match.matchVenue.seats.filter((seat) => seat.ticket.every((ticket) => ticket.matchId != parseInt(id)));
+    const reservedSeats = match.matchVenue.seats.filter((seat) =>seat.ticket.some((ticket) => ticket.matchId === parseInt(id) ));
+    
+    // Extract seat numbers
+    const reservedSeatNumbers = reservedSeats.map((seat) => seat.seatNo);
+    const vacantSeatNumbers = vacantSeats.map((seat) => seat.seatNo);
+    
+    // Get counts
+    const reservedCount = reservedSeats.length;
+    const vacantCount = vacantSeats.length;
+    
+   
     res.status(200).json({
       matchId: id,
-      numberOfReservedSeats: reserved,
-      numberOfVacantSeats: vacant,
-      reservedSeats: reservedSeatNumbers,
-      vacantSeats: vacantSeatNumbers,
+      reservedSeatNumbers,
+      vacantSeatNumbers,
+      reservedCount,
+      vacantCount,
     });
   } catch (error) {
     console.error(error);

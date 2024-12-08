@@ -74,6 +74,46 @@ router.get("/matches", async (req, res) => {
   }
 });
 
+router.get("/matches/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const match = await prisma.match.findUnique({
+      where:{id:parseInt(id)},
+      include: {
+        homeTeam: true, // Include home team details
+        awayTeam: true, // Include away team details
+        matchVenue: {
+          include: {
+            seats: {
+              include: {
+                ticket: true, // Include ticket details for reservation check
+              },
+            },
+          },
+        },
+      },
+    });
+   
+    // Transform the data
+    const matchDetails = {
+      id:match.id,
+      dateTime: match.dateTime,
+      homeTeam: match.homeTeam.name,
+      awayTeam: match.awayTeam.name,
+      venue: match.matchVenue.name,
+      seats: match.matchVenue.seats.map((seat) => ({
+        seatNo: seat.seatNo,
+        isReserved: seat.ticket.some((ticket) => ticket.matchId === match.id), // Check if the ticket belongs to this match
+      })),
+    };
+    
+    res.status(200).json(matchDetails);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching match details" });
+  }
+});
+
 // F10: Reserve Vacant Seat(s)
 router.post("/reserve", auth, async (req, res) => {
   const { matchId, seatNumber, creditCard, pin } = req.body;

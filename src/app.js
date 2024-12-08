@@ -4,6 +4,7 @@ require("dotenv").config();
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 const EFAManagerRouter = require("./routes/EFAManagerRouter");
+const siteAdminRouter = require("./routes/siteAdminRouter");
 // Middleware to parse JSON body data
 app.use(express.json());
 
@@ -11,6 +12,8 @@ app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/efamanager", EFAManagerRouter);
+app.use("/siteadmin", siteAdminRouter);
+
 
 // Basic route to check if the server is running
 app.get("/", (req, res) => {

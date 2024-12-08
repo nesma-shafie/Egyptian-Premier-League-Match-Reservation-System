@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const prisma = require("../prismaClient");
-const managerAuth = async (req, res, next) => {
+const adminAuth = async (req, res, next) => {
   let token = null;
   if (req.header("Authorization")) {
     token = req.header("Authorization").replace("Bearer ", "");
@@ -26,10 +26,10 @@ const managerAuth = async (req, res, next) => {
 });
 
   if (!user) return res.status(404).json({ message: "user not found" });
-  if (user.role!="EFAManager") return res.status(409).json({ message: "no authority" });
+  if (user.role!="SiteAdministrator") return res.status(409).json({ message: "no authority" });
 
   req.user = user;
   next();
 };
 
-module.exports = managerAuth;
+module.exports = adminAuth;
