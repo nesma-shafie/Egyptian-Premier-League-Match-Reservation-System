@@ -37,21 +37,38 @@ router.put("/", auth, async (req, res) => {
 });
 
 // F9: View Match Details (including vacant seats)
-router.get("/matches/:id", async (req, res) => {
+router.get("/matches", async (req, res) => {
   try {
-    const matches = await prisma.match.findFirst({
-      where: { id: parseInt(req.params.id) },
+    const matches = await prisma.match.findMany({
       include: {
-        seats: {
-          where: {
-            ticket: {
-              is: null, // Filter seats where the ticket is null
+        homeTeam: true, // Include home team details
+        awayTeam: true, // Include away team details
+        matchVenue: {
+          include: {
+            seats: {
+              include: {
+                ticket: true, // Include ticket details for reservation check
+              },
             },
           },
         },
       },
     });
-    res.status(200).json(matches);
+   
+    // Transform the data
+    const matchDetails = matches.map((match) => ({
+      id: match.id,
+      dateTime: match.dateTime,
+      homeTeam: match.homeTeam.name,
+      awayTeam: match.awayTeam.name,
+      venue: match.matchVenue.name,
+      seats: match.matchVenue.seats.map((seat) => ({
+        seatNo: seat.seatNo,
+        isReserved: seat.ticket.some((ticket) => ticket.matchId === match.id), // Check if the ticket belongs to this match
+      })),
+    }));
+    
+    res.status(200).json(matchDetails);
   } catch (error) {
     res.status(500).json({ error: "Error fetching match details" });
   }
@@ -67,41 +84,46 @@ router.post("/reserve", auth, async (req, res) => {
 
   try {
     // Check if the match exists
-    const match = await prisma.match.findUnique({
+    const match = await prisma.match.findFirst({
       where: { id: matchId },
     });
-
+    
     if (!match || match.vacantSeats <= 0) {
       return res.status(400).json({ error: "No vacant seats available" });
     }
 
     const seat = await prisma.seat.findFirst({
-        where: {
-          seatNo: seatNumber,
-          ticket: {
-            matchId: matchId, // Filter by matchId from the ticket
+      where: {
+        seatNo: seatNumber,
+        stadiumId:match.matchVenueId,
+        ticket: {
+          none: { // Use 'none' to filter for seats with no associated tickets
+            matchId: matchId, // Optional: filter by matchId if needed
           },
         },
-        include: {
-          ticket:{
-            select: {
-              matchId: true, // Select the matchId from the related ticket
-            },
+      },
+      include: {
+        ticket: {
+          select: {
+            matchId: true, // Select the matchId from the related ticket, if any
           },
         },
-      });
+      },
+    });
+    
       
-
-    if (seat.ticket != null) {
+   
+    if (seat== null) {
       return res.status(400).json({ error: "Seat not available" });
     }
-
+    
     // Update vacant seats count
     await prisma.match.update({
       where: { id: matchId },
       data: { vacantSeats: match.vacantSeats - 1 },
     });
-
+    
+  
     const ticket = await prisma.ticket.create({
       data: {
         matchId,
@@ -112,7 +134,7 @@ router.post("/reserve", auth, async (req, res) => {
 
     res.status(200).json(ticket);
   } catch (error) {
-    res.status(500).json({ error: "Error reserving the seat" });
+    res.status(500).json({ error:error });
   }
 });
 
@@ -144,13 +166,13 @@ router.delete("/cancel/:ticketId", auth, async (req, res) => {
 
     // Cancel reservation
     await prisma.ticket.delete({
-      where: { id: parseInt(id) },
+      where: { id: parseInt(ticketId) },
     });
 
     // Update vacant seats in match
     await prisma.match.update({
-      where: { id: reservation.matchId },
-      data: { vacantSeats: reservation.match.vacantSeats + 1 },
+      where: { id: ticket.matchId },
+      data: { vacantSeats: ticket.match.vacantSeats + 1 },
     });
 
     res.status(200).json({ message: "Reservation cancelled successfully" });

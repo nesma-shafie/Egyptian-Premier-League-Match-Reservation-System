@@ -13,11 +13,7 @@ datasource db {
   url      = env("DATABASE_URL") // Replace with your MySQL database connection URL
 }
 
-enum Role {
-   USER
-   EFAManager
-   SiteAdministrator
-}
+
 model User {
   id        Int      @id @default(autoincrement())
   username  String   @unique
@@ -29,7 +25,6 @@ model User {
   city      String
   address   String? // Optional field
   email     String   @unique
-  roleId    Int      @default(1)
   role      String
   tickets   Ticket[] // Relationship with tickets (Fan can reserve tickets)
 }
@@ -79,5 +74,5 @@ model Ticket {
   userId  Int
   user    User  @relation(fields: [userId], references: [id])
   seatId  Int
-  seat    Seat? @relation(fields: [id], references: [id])
+  seat    Seat? @relation(fields: [seatId], references: [id])
 }

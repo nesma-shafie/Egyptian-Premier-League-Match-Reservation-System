@@ -2,6 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.seat.deleteMany(); // Delete seats
+  await prisma.match.deleteMany(); // Delete matches
+  await prisma.team.deleteMany(); // Delete teams
+  await prisma.stadium.deleteMany(); // Delete stadiums
+  await prisma.user.deleteMany(); // Delete users
+
+  console.log("Database cleared.");
   // Create users with roles
   const roles = ["USER", "EFAManager", "SiteAdministrator"];
   const users = [];
@@ -58,7 +65,9 @@ async function main() {
             name: `Team${i * 2}`,
           },
         },
-        matchVenueId: stadiums[i % 4].id, // Rotate through stadiums
+        matchVenue: {
+          connect: { id: stadiums[i % 4].id }, // Use `connect` with the related object's ID
+        },
         dateTime: new Date(2024, i, i + 1, 19, 0, 0),
         mainReferee: `Referee${i}`,
         linesmen1: `Linesman1-${i}`,
@@ -66,6 +75,7 @@ async function main() {
         vacantSeats: 50,
       },
     });
+    
   }
 
   console.log("Seeding completed.");
