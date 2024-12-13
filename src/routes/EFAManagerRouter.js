@@ -257,5 +257,27 @@ router.get("/matches/:id/seats", managerAuth, async(req, res) => {
     }
 });
 
+// get all teams
+router.get("/teams", managerAuth, async(req, res) => {
+    try {
+        const teams = await prisma.team.findMany();
+        res.status(200).json({ teams });
+    } catch (error) {
+        // console.error(error);
+        res.status(500).json({ error: "An error occurred while retrieving teams." });
+    }
+});
+
+// get all stadiums
+router.get("/stadiums", managerAuth, async(req, res) => {
+    try {
+        const stadiums = await prisma.stadium.findMany();
+        res.status(200).json({ stadiums });
+    } catch (error) {
+        // console.error(error);
+        res.status(500).json({ error: "An error occurred while retrieving stadiums." });
+    }
+});
+
 // Export the router
 module.exports = router;
