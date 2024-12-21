@@ -84,15 +84,13 @@ router.put("/matches/:id", managerAuth, async(req, res) => {
     }
 
     const validUpdates = [
-        "homeTeamName",
-        "awayTeamName",
         "matchVenueName",
         "dateTime",
         "mainReferee",
         "linesmen1",
         "linesmen2",
     ];
-
+    console.log(updates);
     const isValid = updates.every((update) => validUpdates.includes(update));
 
     if (!isValid) {
@@ -271,7 +269,14 @@ router.get("/teams", managerAuth, async(req, res) => {
 // get all stadiums
 router.get("/stadiums", managerAuth, async(req, res) => {
     try {
-        const stadiums = await prisma.stadium.findMany();
+        const stadiums = await prisma.stadium.findMany({ include: { seats: true } });
+        //get length of seats in each stadium
+        stadiums.forEach((stadium) => {
+            //remove the seats array from the response
+
+            stadium.numberOfSeats = stadium.seats.length;
+            delete stadium.seats;
+        });
         res.status(200).json({ stadiums });
     } catch (error) {
         // console.error(error);

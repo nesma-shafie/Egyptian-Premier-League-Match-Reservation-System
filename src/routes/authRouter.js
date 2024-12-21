@@ -43,7 +43,13 @@ router.post("/signup", async(req, res) => {
         },
     });
 
-    if (userExists) {
+    const userExists1 = await prisma.not_approved_User.findFirst({
+        where: {
+            OR: [{ username: username }, { email: email }],
+        },
+    });
+
+    if (userExists || userExists1) {
         return res
             .status(400)
             .json({ message: "Username or email already exists" });
@@ -53,7 +59,7 @@ router.post("/signup", async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the new user in the database
-    const newUser = await prisma.user.create({
+    const newUser = await prisma.not_approved_User.create({
         data: {
             username,
             password: hashedPassword,

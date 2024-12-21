@@ -1,0 +1,134 @@
+    .matches-container {
+        background-color: #f5f8f9;
+        width: 100%;
+    }
+    
+    .matches-header {
+        border-radius: 30px;
+        width: 90%;
+        margin-left: 3%;
+        position: relative;
+        text-align: left;
+        color: white;
+        align-items: center;
+        font-size: 23px;
+        font-weight: 500;
+        padding-left: 25px;
+        text-shadow: 2px 2px 8px #312f2f;
+        width: inherit;
+        margin: 0;
+    }
+    
+    .matches-header-column {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-content: space-around;
+        color: rgb(8, 8, 8);
+    }
+    
+    .matches-header-column p {
+        color: rgb(10, 10, 10);
+        font-size: 90px;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        text-align: center;
+    }
+    
+    .matches {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        color: white;
+        text-shadow: 2px 2px 8px black;
+    }
+    
+    .match {
+        background: linear-gradient(to right, #169cd58c, rgba(0, 0, 0, 0.8));
+        /*hover change color*/
+        padding: 25px;
+        border-radius: 20px;
+        margin-top: 20px;
+        color: white;
+        font-weight: 300;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 230px;
+        box-shadow: 5px 10px 5px 5px #888888;
+    }
+    
+    .match:hover {
+        background: linear-gradient(to right, #169cd5, rgba(0, 0, 0, 0.8));
+    }
+    
+    .match-teams {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        font-size: small;
+        color: white;
+    }
+    
+    .match-team {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        margin-top: 20%;
+    }
+    
+    .match-team p {
+        margin-bottom: 0;
+        color: white;
+    }
+    
+    .match-day-time p {
+        margin-top: -24%;
+        color: white;
+        text-align: center;
+    }
+    
+    .match-day {
+        margin-top: -22%;
+        font-size: x-large;
+        font-weight: 700;
+        color: white;
+    }
+    
+    .match-time {
+        font-size: large;
+        color: white;
+    }
+    
+    .match-location {
+        font-size: smaller;
+        color: white;
+    }
+    
+    .match-location p {
+        margin-bottom: 0;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .view-match-edit {
+        position: absolute;
+        right: 9px;
+        top: 7px;
+    }
+    
+    .view-matches-linesmans {
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    .match-location>p:nth-child(2) {
+        padding: 10px;
+    }

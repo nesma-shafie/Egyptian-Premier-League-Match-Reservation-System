@@ -1,0 +1,57 @@
+.profileContainer {
+    background-color: #ffffff;
+    border-radius: 15px;
+    width: 90%;
+    text-align: center;
+    padding: 25px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileContainer:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profileContainer .form-control {
+    margin-bottom: 25px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    padding: 12px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileContainer .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+.profileContainer .date-picker-control {
+    width: 100%;
+}
+
+.profileContainer .date-picker-control label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.profileContainer button[type="submit"] {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 0.85rem 1.75rem;
+    margin-top: 1.25rem;
+    margin-left: 0;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.profileContainer button[type="submit"]:hover,
+.profileContainer button[type="submit"]:focus,
+.profileContainer button[type="submit"]:active {
+    background-color: #1e7e34;
+    transform: scale(1.08);
+}

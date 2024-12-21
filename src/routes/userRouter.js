@@ -54,7 +54,7 @@ router.get("/matches", async(req, res) => {
                 },
             },
         });
-
+        console.log(matches);
         // Transform the data
         const matchDetails = matches.map((match) => ({
             id: match.id,
@@ -72,14 +72,14 @@ router.get("/matches", async(req, res) => {
         }));
         //get only match in future
         const new_matches = matchDetails.filter(match => ((match.dateTime) >= new Date()));
-
+        // console.log(new_matches);
         res.status(200).json(new_matches);
     } catch (error) {
         res.status(500).json({ error: "Error fetching match details" });
     }
 });
 
-router.get("/matches/:id", auth, async(req, res) => {
+router.get("/matches/:id", async(req, res) => {
     const { id } = req.params;
     try {
         const match = await prisma.match.findUnique({

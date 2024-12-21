@@ -76,3 +76,20 @@ model Ticket {
   seatId  Int
   seat    Seat? @relation(fields: [seatId], references: [id])
 }
+
+
+
+
+model not_approved_User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  firstName String
+  lastName  String
+  birthDate DateTime
+  gender    String
+  city      String
+  email     String   @unique
+  role      String
+  address   String? // Optional field
+}

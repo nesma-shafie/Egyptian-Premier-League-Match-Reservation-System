@@ -1,0 +1,122 @@
+.match-details {
+    padding: 20px;
+    background-color: #f8f9fa;
+    background-image: url("https://img.freepik.com/premium-vector/cricket-match-live-playground_103288-139.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.match-details-container {
+    background-color: #dae4e9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.match-details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.match-details-teams {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+.match-details-day-time {
+    text-align: center;
+}
+
+.match-details-time,
+.match-details-day {
+    margin: 0;
+}
+
+.seats-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.seat-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.seat {
+    width: 50px;
+    height: 50px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat-col.reserved .seat {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.seat-col.selected .seat {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.seat-reserved {
+    background-color: red;
+    cursor: not-allowed;
+}
+
+.seat-reserved-by-me {
+    background-color: green;
+}
+
+.selected {
+    border: 2px solid blue;
+}
+
+.venue {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.official {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}

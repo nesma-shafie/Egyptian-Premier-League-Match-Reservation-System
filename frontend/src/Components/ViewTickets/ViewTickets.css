@@ -1,0 +1,17 @@
+.ticket-cancel {
+    font-size: xx-large;
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    cursor: pointer;
+}
+
+.match {
+    position: relative;
+}
+
+.ticket {
+    margin-bottom: -5%;
+    font-weight: bold;
+    color: white
+}
