@@ -9,26 +9,26 @@ An automated ticket reservation system for football matches in the **Egyptian Pr
 - [Installation](#Installation)
 ## 🔧 Features  
 
-### 👤 Site Administrator  
+### Site Administrator  
 -  Approve new users  
 -  Remove existing users  
 
-### 🏆 EFA Managers  
+### EFA Managers  
 -  Create and edit match events  
 -  Add new stadiums  
 -  View match and seat details  
 
-### 🎟️ Customers (Fans)  
+### Customers (Fans)  
 -  Edit personal data  
 -  View match details  
 -  Reserve and cancel seats  
 
-### 🆓 Guests  
+### Guests  
 -  Register new accounts  
 -  Sign in  
 - View match details  
 
-## 🛠️ Technologies  
+## Technologies  
 - **Front End**: React ⚛️  
 - **Back End**: Node.js 🟢  
 
