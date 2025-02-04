@@ -28,7 +28,7 @@ An automated ticket reservation system for football matches in the **Egyptian Pr
 -  Sign in  
 - View match details  
 
-## Technologies  
+## 🛠️Technologies  
 - **Front End**: React ⚛️  
 - **Back End**: Node.js 🟢  
 
